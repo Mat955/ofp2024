@@ -7,9 +7,21 @@ const App = () => {
   const [numA, setNumA] = useState<number>(0);
   const [numB, setNumB] = useState<number>(0);
   const [result, setResult] = useState<number | string>(0);
+  const [error, setError] = useState<string>('');
 
   const handleButtonClick = (operation: (a: number, b: number) => number) => {
-    setResult(operation(numA, numB));
+    
+    try {
+      setError('');
+      
+      if (operation === functionOperations.divide && numB === 0) {
+        throw new Error('Cannot divide by zero');
+      }
+
+      setResult(operation(numA, numB));
+    } catch (e) {
+      setError(e.message);
+    } 
   };
 
   return (
@@ -24,7 +36,7 @@ const App = () => {
         <PrimaryButton onClick={() => handleButtonClick(functionOperations.multiply)}>*</PrimaryButton>
         <PrimaryButton onClick={() => handleButtonClick(functionOperations.divide)}>/</PrimaryButton>
       </div>
-      <div>Result: {result}</div>
+      {error ? <div className="text-red-500">{error}</div> : <div>Result: {result}</div>}
     </div>
   );
 };
